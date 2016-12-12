@@ -10,28 +10,35 @@
 #include "PGrid.h"
 #include<time.h>
 #include <cstdlib>
+#include <fstream>
 
 using namespace std;
 
 int main() {
 	srand(time(NULL));//Seeds the random funcion
-	int gSize = 10; //size of grid
-	double pValue = 0.5; //probability of cell being populated
+	int gSize = 100; //size of grid
+	int repetitions = 1000; //Amount of times tested at each pValue
+	PGrid grid(gSize); //initilaising grid;
+	ofstream output; //creating CSV to plot in matlab
+	output.open("percolation.csv");
 
-	//initilaising grid;
-	PGrid grid(gSize, pValue);
+	for (double pValue = 0.1; pValue < 1; pValue = pValue + 0.001) {
+		int sCount = 0; //counts how many successful percolations for this pValue
+		for (int i = 0; i < repetitions; i++) {
 
-	//setting  finish point
-	grid.setFinish();
+			//populating grid
+			grid.populate(pValue);
 
-	for (int i = 0; i<gSize ; i++){
-		for ( int j = 0; j<gSize ; j++){
+			//setting  finish point
+			grid.setFinish();
 
-
-			cout << grid.getCell(i*gSize+j);
+			//set start point, check if it connects
+			if (grid.process()) {
+				sCount++;
+			}
 		}
-		cout << endl;
+		cout << pValue << endl;
+		output << pValue << "," << double(sCount) / repetitions << "\n";
 	}
-
 	return 0;
 }
