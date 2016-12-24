@@ -16,8 +16,10 @@ private:
 	int m_gSize;
 	int currentCell;
 	PCell *grid;
-	bool possRout;
-	std::vector<int> map;
+	std::vector<int> map; //Map of 1's
+	std::vector<int> possMap; //map of 3's aka possible routes
+	int nextCell;
+	bool nextPicked;
 public:
 	PGrid(int);
 	void populate(double pValue);
