@@ -1,6 +1,6 @@
 //============================================================================
 // Name        : Percolation.cpp
-// Author      : 
+// Author      :
 // Version     :
 // Copyright   : Your copyright notice
 // Description : Hello World in C++, Ansi-style
@@ -16,7 +16,7 @@ using namespace std;
 
 int main() {
 	srand(time(NULL));//Seeds the random funcion
-	int gSize = 1000; //size of grid
+	int gSize = 500; //size of grid
 	int repetitions = 100; //Amount of times tested at each pValue
 	PGrid grid(gSize); //initilaising grid;
 	ofstream output; //creating CSV to plot in matlab
@@ -40,6 +40,8 @@ int main() {
 		}
 		cout << pValue << endl;
 		output << pValue << "," << double(sCount) / repetitions << "\n";
+
 	}
+	output.close();
 	return 0;
 }

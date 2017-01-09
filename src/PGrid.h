@@ -17,9 +17,9 @@ private:
 	int currentCell;
 	PCell *grid;
 	std::vector<int> map; //Map of 1's
-	std::vector<int> possMap; //map of 3's aka possible routes
 	int nextCell;
 	bool nextPicked;
+	int iterations;
 public:
 	PGrid(int);
 	void populate(double pValue);
@@ -31,6 +31,7 @@ public:
 	bool checkNeighbours();
 	bool move();
 	void printGrid();
+	void expGrid();
 };
 
 #endif /* PGRID_H_ */

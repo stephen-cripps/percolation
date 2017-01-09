@@ -11,6 +11,8 @@
 #include "PGrid.h"
 #include<time.h>
 #include <cstdlib>
+#include <fstream>
+#include <sstream>
 
 using namespace std;
 
@@ -57,6 +59,7 @@ bool PGrid::process() {
 
 	currentCell = map.at(rand() % (map.size())); //set start point from random live cell on map
 
+//	iterations = 0;
 	//Process connection
 	while (true) {
 		grid[currentCell].updateCell(4); //ensure cell isn't rechecked, mark as 4 to differentiate from simply empty cells if printing
@@ -68,11 +71,17 @@ bool PGrid::process() {
 			return 1;
 
 		}
-		//printGrid();
+
+
 		if (!move()) { //move, if you can't it fails
 			map.clear();
 			return 0;
+
 		}
+//		iterations++;
+//		if (iterations % 10000 == 0 || iterations% 10000 == 1 || iterations% 10000 == 2){
+//			expGrid();
+//		}
 
 	}
 }
@@ -93,7 +102,6 @@ bool PGrid::checkNeighbours() {
 		switch (grid[i].getState()) {
 		case 1: ///Mark and indicate the current cell has a branch
 			grid[i].updateCell(3);
-			possMap.push_back(i); // mapping possible routs
 			if (!nextPicked) { //if the next cell hasn't been picked this is the next cell
 				nextCell = i;
 				nextPicked = 1;
@@ -112,7 +120,6 @@ bool PGrid::checkNeighbours() {
 		i = currentCell + m_gSize;
 	}
 
-
 	//--------for left and right-----------------
 	int cycle = 1; // Have to count if its the first or second iteration of the next loop to appropriately change boundary conditions
 	i = currentCell - 1;
@@ -126,7 +133,6 @@ bool PGrid::checkNeighbours() {
 		switch (grid[i].getState()) {
 		case 1:
 			grid[i].updateCell(3);
-			possMap.push_back(i);
 			if (!nextPicked) {
 				nextCell = i;
 				nextPicked = 1;
@@ -153,9 +159,9 @@ bool PGrid::move() {
 		currentCell = nextCell;
 		return 1;
 	} else {//if no possible rout scan all possible routs for unexplored ones (3's which havent been tirned into fours)
-		for (int i = 0; i < possMap.size(); i++) {
-			if (grid[possMap.at(i)].getState() == 3) { //if the mapped position in the grid is still 3
-				currentCell = possMap.at(i);
+		for (int i = 0; i < map.size(); i++) {
+			if (grid[map.at(i)].getState() == 3) { //if the mapped position in the grid is still 3
+				currentCell = map.at(i);
 				return 1;
 			}
 		}
@@ -167,7 +173,7 @@ bool PGrid::move() {
 void PGrid::printGrid() {
 
 	for (int i = 0; i < m_gSize; i++) {
-		cout << i << ":  ";
+
 		for (int j = 0; j < m_gSize; j++) {
 			cout << grid[i * m_gSize + j].getState();
 		}
@@ -175,4 +181,21 @@ void PGrid::printGrid() {
 	}
 	cout << endl;
 
+}
+
+void PGrid::expGrid() {
+
+	 ostringstream fn;
+	 fn << "file" << iterations << ".csv";
+	 ofstream gridout; //creating CSV to plot in matlab
+	 gridout.open( fn.str().c_str());
+    	for (int i = 0; i < m_gSize; i++) {
+
+		for (int j = 0; j < m_gSize; j++) {
+			gridout << grid[i * m_gSize + j].getState()<< ",";
+		}
+		gridout << "\n";
+	}
+	cout<< "gridout" << iterations << endl;
+	gridout.close();
 }
